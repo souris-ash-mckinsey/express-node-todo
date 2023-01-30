@@ -1,4 +1,4 @@
-const { ServerError } = require('./errors');
+const { ServerError } = require('../errors');
 
 const tasksData = {
   data: [
