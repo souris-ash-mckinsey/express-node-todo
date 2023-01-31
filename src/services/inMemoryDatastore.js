@@ -8,15 +8,15 @@ const tasksData = {
       isCompleted: false
     }
   ],
-  add(taskObject) {
+  add: (taskObject) => {
     const nextId = this.data.length;
     this.data.push({ id: nextId, ...taskObject });
     return nextId;
   },
-  getAll() {
+  getAll: () => {
     return this.data;
   },
-  get(id) {
+  get: (id) => {
     const result = this.data.filter((entry) => entry.id == Number(id))[0];
     if (result == undefined) {
       throw new ServerError(`No task found with id = ${id}`, 404);
@@ -24,19 +24,19 @@ const tasksData = {
     
     return result;
   },
-  getCompleted() {
+  getCompleted: () => {
     return this.data.filter((entry) => entry.isCompleted);
   },
-  getActive() {
+  getActive: () => {
     return this.data.filter((entry) => !entry.isCompleted);
   },
-  removeCompleted() {
+  removeCompleted: () => {
     this.data = this.data.filter((entry) => !entry.isCompleted);
   },
-  deleteTask(id) {
+  deleteTask: (id) => {
     this.data = this.data.filter((entry) => entry.id != Number(id));
   },
-  update(newTask) {
+  update: (newTask) => {
     this.data.splice(newTask.id, 1, newTask);
   }
 };
