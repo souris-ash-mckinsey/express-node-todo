@@ -1,18 +1,18 @@
 const { ServerError } = require('../errors');
-const db = require('../../database/models');
+const { Task } = require('../../database/models');
 
 const tasksDbService = {
   add: async (taskObject) => {
-    const task = await db.Task.create(taskObject);
+    const task = await Task.create(taskObject);
     return task.id;
   },
   getAll: async () => {
-    const allUsers = await db.Task.findAll();
+    const allUsers = await Task.findAll();
     return allUsers;
   },
   get: async (id) => {
     try {
-      const task = await db.Task.findOne({
+      const task = await Task.findOne({
         where: {
           id: Number(id)
         }
@@ -24,14 +24,14 @@ const tasksDbService = {
     }
   },
   getCompleted: async () => {
-    const completedTasks = await db.Task.findAll({
+    const completedTasks = await Task.findAll({
       isCompleted: true
     });
 
     return completedTasks;
   },
   getActive: async () => {
-    const activeTasks = await db.Task.findAll({
+    const activeTasks = await Task.findAll({
       where: {
         isCompleted: false
       }
@@ -40,14 +40,14 @@ const tasksDbService = {
     return activeTasks;
   },
   removeCompleted: async () => {
-    await db.Task.destroy({
+    await Task.destroy({
       where: {
         isCompleted: true
       }
     });
   },
   deleteTask: async (id) => {
-    await db.Task.destroy({
+    await Task.destroy({
       where: {
         id: Number(id)
       }
@@ -56,7 +56,7 @@ const tasksDbService = {
   update: async (newTask) => {
     const taskId = newTask.id;
     delete newTask['id'];
-    await db.Task.update(newTask, {
+    await Task.update(newTask, {
       where: {
         id: taskId
       }
