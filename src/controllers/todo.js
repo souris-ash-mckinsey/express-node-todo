@@ -1,32 +1,33 @@
-const { tasksData } = require('../services/inMemoryDatastore');
+const { tasksDbService } = require('../services/taskDbService');
+const tasksData = tasksDbService;
 
-const createTaskController = (todoObj) => {
-  tasksData.add({...todoObj.body, isCompleted: false});
+const createTaskController = async (todoObj) => {
+  return await tasksData.add({...todoObj, isCompleted: false});
 };
 
-const deleteTaskController = (taskId) => {
-  tasksData.deleteTask(taskId);
+const deleteTaskController = async (taskId) => {
+  await tasksData.deleteTask(taskId);
 };
 
-const updateTaskController = (todoObj, taskId) => {
-  tasksData.update({...todoObj.body, id: Number(taskId)});
+const updateTaskController = async (todoObj, taskId) => {
+  await tasksData.update({...todoObj, id: Number(taskId)});
 };
 
-const partialUpdateTaskController = (todoObj, taskId) => {
+const partialUpdateTaskController = async (todoObj, taskId) => {
   let task = tasksData.get(taskId);
-  tasksData.update({ ...task, ...todoObj.body });
+  await tasksData.update({ ...task, ...todoObj });
 };
 
-const getTaskController = (taskId) => {
-  return tasksData.get(taskId);
+const getTaskController = async (taskId) => {
+  return await tasksData.get(taskId);
 };
 
-const getAllTasksController = (completed) => {
+const getAllTasksController = async (completed) => {
   if (completed === undefined) {
-    return tasksData.getAll();
+    return await tasksData.getAll();
   }
   else {
-    return completed ? tasksData.getCompleted() : tasksData.getActive();
+    return completed ? await tasksData.getCompleted() : await tasksData.getActive();
   }
 };
 

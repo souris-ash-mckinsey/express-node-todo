@@ -10,38 +10,39 @@ const {
 
 const todoRoute = express.Router();
 
-todoRoute.get('/tasks', (req, res) => {
+todoRoute.get('/tasks', async (req, res) => {
   if (req.query.isCompleted == undefined) {
     res.send(JSON.stringify(getAllTasksController()));
     return;
   }
 
   res.send(JSON.stringify(
-    getAllTasksController(req.query.isCompleted == 'true' ? true : false)
+    await getAllTasksController(req.query.isCompleted == 'true' ? true : false)
   ));
 });
 
-todoRoute.get('/tasks/:taskId', (req, res) => {
-  res.send(JSON.stringify(getTaskController(req.params.taskId)));
+todoRoute.get('/tasks/:taskId', async (req, res) => {
+  res.send(JSON.stringify(await getTaskController(req.params.taskId)));
 });
 
-todoRoute.post('/tasks', (req, res) => {
-  createTaskController(req.body);
-  res.sendStatus(201);
+todoRoute.post('/tasks', async (req, res) => {
+  const id = await createTaskController(req.body);
+  res.status(201);
+  res.send(JSON.stringify({ id: id}));
 });
 
-todoRoute.put('/tasks/:taskId', (req, res) => {
-  updateTaskController(req.body, req.params.taskId);
+todoRoute.put('/tasks/:taskId', async (req, res) => {
+  await updateTaskController(req.body, req.params.taskId);
   res.sendStatus(200);
 });
 
-todoRoute.patch('/tasks/:taskId', (req, res) => {
-  partialUpdateTaskController(req.body, req.params.taskId);
+todoRoute.patch('/tasks/:taskId', async (req, res) => {
+  await partialUpdateTaskController(req.body, req.params.taskId);
   res.sendStatus(200);
 });
 
-todoRoute.delete('/tasks/:taskId', (req, res) => {
-  deleteTaskController(req.params.taskId);
+todoRoute.delete('/tasks/:taskId', async (req, res) => {
+  await deleteTaskController(req.params.taskId);
   res.sendStatus(200);
 });
 
