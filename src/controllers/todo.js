@@ -1,33 +1,32 @@
 const { tasksDbService } = require('../services/taskDbService');
-const tasksData = tasksDbService;
 
 const createTaskController = async (todoObj) => {
-  return await tasksData.add({...todoObj, isCompleted: false});
+  return await tasksDbService.add({...todoObj, isCompleted: false});
 };
 
 const deleteTaskController = async (taskId) => {
-  await tasksData.deleteTask(taskId);
+  await tasksDbService.deleteTask(taskId);
 };
 
 const updateTaskController = async (todoObj, taskId) => {
-  await tasksData.update({...todoObj, id: Number(taskId)});
+  await tasksDbService.update({...todoObj, id: Number(taskId)});
 };
 
 const partialUpdateTaskController = async (todoObj, taskId) => {
-  let task = tasksData.get(taskId);
-  await tasksData.update({ ...task, ...todoObj });
+  let task = tasksDbService.get(taskId);
+  await tasksDbService.update({ ...task, ...todoObj });
 };
 
 const getTaskController = async (taskId) => {
-  return await tasksData.get(taskId);
+  return await tasksDbService.get(taskId);
 };
 
 const getAllTasksController = async (completed) => {
   if (completed === undefined) {
-    return await tasksData.getAll();
+    return await tasksDbService.getAll();
   }
   else {
-    return completed ? await tasksData.getCompleted() : await tasksData.getActive();
+    return completed ? await tasksDbService.getCompleted() : await tasksDbService.getActive();
   }
 };
 
