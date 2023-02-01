@@ -1,40 +1,54 @@
 const { tasksDbService } = require('../services/taskDbService');
 
-const createTaskController = async (todoObj) => {
-  return await tasksDbService.add({...todoObj, isCompleted: false});
+const createTaskController = async (req, res) => {
+  const todoObj = req.body;
+  const id = await tasksDbService.add({...todoObj, isCompleted: false});
+  res.status(201);
+  res.send(JSON.stringify({ id: id}));
 };
 
-const deleteTaskController = async (taskId) => {
-  await tasksDbService.deleteTask(taskId);
+const deleteTaskController = async (req, res) => {
+  await tasksDbService.deleteTask(req.params.taskId);
+  res.sendStatus(200);
 };
 
-const updateTaskController = async (todoObj, taskId) => {
-  await tasksDbService.update({...todoObj, id: Number(taskId)});
-};
-
-const partialUpdateTaskController = async (todoObj, taskId) => {
+const patchTaskController = async (req, res) => {
+  const todoObj = req.body;
+  const taskId = req.params.taskId;
   let task = tasksDbService.get(taskId);
   await tasksDbService.update({ ...task, ...todoObj });
+  res.sendStatus(200);
 };
 
-const getTaskController = async (taskId) => {
-  return await tasksDbService.get(taskId);
+const putTaskController = async (req, res) => {
+  const todoObj = req.body;
+  const taskId = req.params.taskId;
+  await tasksDbService.update({...todoObj, id: Number(taskId)});
+  res.sendStatus(200);
 };
 
-const getAllTasksController = async (completed) => {
-  if (completed === undefined) {
-    return await tasksDbService.getAll();
+const getTaskController = async (req, res) => {
+  res.send(JSON.stringify(await tasksDbService.get(req.params.taskId)));
+};
+
+const getAllTasksController = async (req, res) => {
+  if (req.query.isCompleted == undefined) {
+    res.send(JSON.stringify(await tasksDbService.getAll()));
+    return;
   }
-  else {
-    return completed ? await tasksDbService.getCompleted() : await tasksDbService.getActive();
-  }
+
+  res.send(JSON.stringify(
+    req.query.isCompleted == 'true' 
+      ? await tasksDbService.getCompleted() 
+      : await tasksDbService.getActive())
+  );
 };
 
 module.exports = { 
   createTaskController, 
   deleteTaskController, 
-  updateTaskController, 
-  partialUpdateTaskController, 
-  getAllTasksController, 
-  getTaskController 
+  patchTaskController,
+  putTaskController,
+  getTaskController,
+  getAllTasksController 
 };
