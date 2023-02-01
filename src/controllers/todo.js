@@ -4,7 +4,7 @@ const createTaskController = async (req, res) => {
   const todoObj = req.body;
   const id = await tasksDbService.add({...todoObj, isCompleted: false});
   res.status(201);
-  res.send(JSON.stringify({ id: id}));
+  res.send(JSON.stringify({ id: id, ...todoObj}));
 };
 
 const deleteTaskController = async (req, res) => {
@@ -17,14 +17,14 @@ const patchTaskController = async (req, res) => {
   const taskId = req.params.taskId;
   let task = tasksDbService.get(taskId);
   await tasksDbService.update({ ...task, ...todoObj });
-  res.sendStatus(200);
+  res.send(JSON.stringify({ id: taskId, ...todoObj}));
 };
 
 const putTaskController = async (req, res) => {
   const todoObj = req.body;
   const taskId = req.params.taskId;
   await tasksDbService.update({...todoObj, id: Number(taskId)});
-  res.sendStatus(200);
+  res.send(JSON.stringify({ id: taskId, ...todoObj }));
 };
 
 const getTaskController = async (req, res) => {
